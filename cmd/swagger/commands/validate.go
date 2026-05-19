@@ -3,17 +3,6 @@
 
 package commands
 
-import (
-	"errors"
-	"fmt"
-	"log"
-	"strings"
-
-	"github.com/go-openapi/loads"
-	"github.com/go-openapi/strfmt"
-	"github.com/go-openapi/validate"
-)
-
 const (
 	// Output messages.
 	missingArgMsg  = "the validate command requires the swagger document url to be specified"
@@ -31,44 +20,8 @@ type ValidateSpec struct {
 }
 
 // Execute validates the spec.
-func (c *ValidateSpec) Execute(args []string) error {
-	if len(args) == 0 {
-		return errors.New(missingArgMsg)
-	}
+func (c *ValidateSpec) Execute(args []string) error { _ = "STUB: not implemented"; return nil }
 
-	swaggerDoc := args[0]
+// Attempts to report about all errors
 
-	specDoc, err := loads.Spec(swaggerDoc)
-	if err != nil {
-		return err
-	}
-
-	// Attempts to report about all errors
-	validate.SetContinueOnErrors(!c.StopOnError)
-
-	v := validate.NewSpecValidator(specDoc.Schema(), strfmt.Default)
-	result, _ := v.Validate(specDoc) // returns fully detailed result with errors and warnings
-
-	if result.IsValid() {
-		log.Printf(validSpecMsg, swaggerDoc, specDoc.Version())
-	}
-	if result.HasWarnings() {
-		log.Printf(warningSpecMsg, swaggerDoc)
-		if !c.SkipWarnings {
-			log.Printf("See warnings below:\n")
-			for _, desc := range result.Warnings {
-				log.Printf("- WARNING: %s\n", desc.Error())
-			}
-		}
-	}
-	if result.HasErrors() {
-		var buf strings.Builder
-		fmt.Fprintf(&buf, invalidSpecMsg, swaggerDoc, specDoc.Version())
-		for _, desc := range result.Errors {
-			fmt.Fprintf(&buf, "- %s\n", desc.Error())
-		}
-		return errors.New(buf.String())
-	}
-
-	return nil
-}
+// returns fully detailed result with errors and warnings

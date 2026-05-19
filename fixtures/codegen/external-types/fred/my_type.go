@@ -11,31 +11,47 @@ import (
 type MyAlternateType string
 
 // Validate MyAlternateType
-func (MyAlternateType) Validate(strfmt.Registry) error                         { return nil }
-func (MyAlternateType) ContextValidate(context.Context, strfmt.Registry) error { return nil }
+func (MyAlternateType) Validate(strfmt.Registry) error { _ = "STUB: not implemented"; return nil }
+func (MyAlternateType) ContextValidate(context.Context, strfmt.Registry) error {
+	_ = "STUB: not implemented"
 
-// MyAlternateInteger ...
+	// MyAlternateInteger ...
+	return nil
+}
+
 type MyAlternateInteger int
 
 // Validate MyAlternateInteger
-func (MyAlternateInteger) Validate(strfmt.Registry) error                         { return nil }
-func (MyAlternateInteger) ContextValidate(context.Context, strfmt.Registry) error { return nil }
+func (MyAlternateInteger) Validate(strfmt.Registry) error { _ = "STUB: not implemented"; return nil }
+func (MyAlternateInteger) ContextValidate(context.Context, strfmt.Registry) error {
+	_ = "STUB: not implemented"
 
-// MyAlternateString ...
+	// MyAlternateString ...
+	return nil
+}
+
 type MyAlternateString string
 
 // Validate MyAlternateString
-func (MyAlternateString) Validate(strfmt.Registry) error                         { return nil }
-func (MyAlternateString) ContextValidate(context.Context, strfmt.Registry) error { return nil }
+func (MyAlternateString) Validate(strfmt.Registry) error { _ = "STUB: not implemented"; return nil }
+func (MyAlternateString) ContextValidate(context.Context, strfmt.Registry) error {
+	_ = "STUB: not implemented"
 
-// MyAlternateOtherType ...
+	// MyAlternateOtherType ...
+	return nil
+}
+
 type MyAlternateOtherType struct{}
 
 // Validate MyAlternateOtherType
-func (MyAlternateOtherType) Validate(strfmt.Registry) error                         { return nil }
-func (MyAlternateOtherType) ContextValidate(context.Context, strfmt.Registry) error { return nil }
+func (MyAlternateOtherType) Validate(strfmt.Registry) error { _ = "STUB: not implemented"; return nil }
+func (MyAlternateOtherType) ContextValidate(context.Context, strfmt.Registry) error {
+	_ = "STUB: not implemented"
 
-// MyAlternateStreamer ...
+	// MyAlternateStreamer ...
+	return nil
+}
+
 type MyAlternateStreamer io.Reader
 
 // MyAlternateInterface ...

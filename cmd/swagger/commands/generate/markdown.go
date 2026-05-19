@@ -19,20 +19,11 @@ type Markdown struct {
 }
 
 // Execute runs this command.
-func (m *Markdown) Execute(_ []string) error {
-	return createSwagger(m)
-}
+func (m *Markdown) Execute(_ []string) error { _ = "STUB: not implemented"; return nil }
 
 // apply options.
-func (m Markdown) apply(opts *generator.GenOpts) {
-	m.Shared.apply(opts)
-	m.Models.apply(opts)
-	m.Operations.apply(opts)
-}
+func (m Markdown) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
-func (m *Markdown) generate(opts *generator.GenOpts) error {
-	return generator.GenerateMarkdown(string(m.Output), m.Models.Models, m.Operations.Operations, opts)
-}
+func (m *Markdown) generate(opts *generator.GenOpts) error { _ = "STUB: not implemented"; return nil }
 
-func (m Markdown) log(_ string) {
-}
+func (m Markdown) log(_ string) { _ = "STUB: not implemented"; return }

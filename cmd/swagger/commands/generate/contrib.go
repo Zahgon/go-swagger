@@ -8,11 +8,8 @@ import (
 )
 
 // contribOptionsOverride gives contributed templates the ability to override the options if they need.
-func contribOptionsOverride(opts *generator.GenOpts) {
-	if opts.Template == "stratoscale" {
-		// Stratoscale template needs to regenerate the configureapi on every run.
-		opts.RegenerateConfigureAPI = true
-		// It also does not use the main.go
-		opts.IncludeMain = false
-	}
-}
+func contribOptionsOverride(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
+
+// Stratoscale template needs to regenerate the configureapi on every run.
+
+// It also does not use the main.go

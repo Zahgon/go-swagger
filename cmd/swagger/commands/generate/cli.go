@@ -15,18 +15,9 @@ type Cli struct {
 }
 
 // Execute runs this command.
-func (c *Cli) Execute(_ []string) error {
-	return createSwagger(c)
-}
+func (c *Cli) Execute(_ []string) error { _ = "STUB: not implemented"; return nil }
 
 // apply options.
-func (c Cli) apply(opts *generator.GenOpts) {
-	c.Client.apply(opts)
-	opts.IncludeCLi = true
-	opts.CliPackage = c.CliPackage
-	opts.CliAppName = c.CliAppName
-}
+func (c Cli) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
-func (c *Cli) generate(opts *generator.GenOpts) error {
-	return c.Client.generate(opts)
-}
+func (c *Cli) generate(opts *generator.GenOpts) error { _ = "STUB: not implemented"; return nil }

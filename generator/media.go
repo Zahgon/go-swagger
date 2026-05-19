@@ -5,12 +5,6 @@ package generator
 
 import (
 	"regexp"
-	"slices"
-	"sort"
-	"strings"
-
-	"github.com/go-openapi/runtime"
-	"github.com/go-openapi/swag"
 )
 
 const jsonSerializer = "json"
@@ -64,125 +58,35 @@ var knownConsumers = map[string]string{
 	"multipartform": "runtime.DiscardConsumer",
 }
 
-func wellKnownMime(tn string) (string, bool) {
-	for k, v := range mediaTypeNames {
-		if k.MatchString(tn) {
-			return v, true
-		}
-	}
-	return "", false
-}
+func wellKnownMime(tn string) (string, bool) { _ = "STUB: not implemented"; return "", false }
 
 const mimeParamParts = 2
 
-func mediaParameters(orig string) string {
-	parts := strings.SplitN(orig, ";", mimeParamParts)
-	if len(parts) < mimeParamParts {
-		return ""
-	}
-	return parts[1]
-}
+func mediaParameters(orig string) string { _ = "STUB: not implemented"; return "" }
 
 func (a *appGenerator) makeSerializers(mediaTypes []string, known func(string) (string, bool)) (GenSerGroups, bool) {
-	supportsJSON := false
-	uniqueSerializers := make(map[string]*GenSerializer, len(mediaTypes))
-	uniqueSerializerGroups := make(map[string]*GenSerGroup, len(mediaTypes))
-
-	// build all required serializers
-	for _, media := range mediaTypes {
-		key := mediaMime(media)
-		nm, ok := wellKnownMime(key)
-		if !ok {
-			// keep this serializer named, even though its implementation is empty (cf. #1557)
-			nm = key
-		}
-		name := swag.ToJSONName(nm)
-		impl, _ := known(name)
-
-		ser, ok := uniqueSerializers[key]
-		if !ok {
-			ser = &GenSerializer{
-				AppName:        a.Name,
-				ReceiverName:   a.Receiver,
-				Name:           name,
-				MediaType:      key,
-				Implementation: impl,
-				Parameters:     []string{},
-			}
-			uniqueSerializers[key] = ser
-		}
-		// provide all known parameters (currently unused by codegen templates)
-		if params := strings.TrimSpace(mediaParameters(media)); params != "" {
-			if !slices.Contains(ser.Parameters, params) {
-				ser.Parameters = append(ser.Parameters, params)
-			}
-		}
-
-		uniqueSerializerGroups[name] = &GenSerGroup{
-			GenSerializer: GenSerializer{
-				AppName:        a.Name,
-				ReceiverName:   a.Receiver,
-				Name:           name,
-				Implementation: impl,
-			},
-		}
-	}
-
-	if len(uniqueSerializers) == 0 {
-		impl, _ := known(jsonSerializer)
-		uniqueSerializers[runtime.JSONMime] = &GenSerializer{
-			AppName:        a.Name,
-			ReceiverName:   a.Receiver,
-			Name:           jsonSerializer,
-			MediaType:      runtime.JSONMime,
-			Implementation: impl,
-			Parameters:     []string{},
-		}
-		uniqueSerializerGroups[jsonSerializer] = &GenSerGroup{
-			GenSerializer: GenSerializer{
-				AppName:        a.Name,
-				ReceiverName:   a.Receiver,
-				Name:           jsonSerializer,
-				Implementation: impl,
-			},
-		}
-		supportsJSON = true
-	}
-
-	// group serializers by consumer/producer to serve several mime media types
-	serializerGroups := make(GenSerGroups, 0, len(uniqueSerializers))
-
-	for _, group := range uniqueSerializerGroups {
-		if group.Name == jsonSerializer {
-			supportsJSON = true
-		}
-		serializers := make(GenSerializers, 0, len(uniqueSerializers))
-		for _, ser := range uniqueSerializers {
-			if group.Name == ser.Name {
-				sort.Strings(ser.Parameters)
-				serializers = append(serializers, *ser)
-			}
-		}
-		sort.Sort(serializers)
-		group.AllSerializers = serializers // provides the full list of mime media types for this serializer group
-		serializerGroups = append(serializerGroups, *group)
-	}
-	sort.Sort(serializerGroups)
-	return serializerGroups, supportsJSON
+	_ = "STUB: not implemented"
+	return *new(GenSerGroups), false
 }
 
+// build all required serializers
+
+// keep this serializer named, even though its implementation is empty (cf. #1557)
+
+// provide all known parameters (currently unused by codegen templates)
+
+// group serializers by consumer/producer to serve several mime media types
+
+// provides the full list of mime media types for this serializer group
+
 func (a *appGenerator) makeConsumes() (GenSerGroups, bool) {
+	_ = "STUB: not implemented"
 	// builds a codegen struct from all consumes in the spec
-	return a.makeSerializers(a.Analyzed.RequiredConsumes(), func(media string) (string, bool) {
-		c, ok := knownConsumers[media]
-		return c, ok
-	})
+	return *new(GenSerGroups), false
 }
 
 func (a *appGenerator) makeProduces() (GenSerGroups, bool) {
+	_ = "STUB: not implemented"
 	// builds a codegen struct from all produces in the spec
-	return a.makeSerializers(a.Analyzed.RequiredProduces(), func(media string) (string, bool) {
-		p, ok := knownProducers[media]
-		return p, ok
-	})
+	return *new(GenSerGroups), false
 }

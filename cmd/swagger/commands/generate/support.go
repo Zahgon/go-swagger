@@ -4,8 +4,6 @@
 package generate
 
 import (
-	"log"
-
 	"github.com/go-swagger/go-swagger/generator"
 )
 
@@ -24,35 +22,13 @@ type Support struct {
 }
 
 // Execute generates the supporting files file.
-func (s *Support) Execute(_ []string) error {
-	return createSwagger(s)
-}
+func (s *Support) Execute(_ []string) error { _ = "STUB: not implemented"; return nil }
 
 // apply options.
-func (s *Support) apply(opts *generator.GenOpts) {
-	s.Shared.apply(opts)
-	s.Models.apply(opts)
-	s.Operations.apply(opts)
-	s.clientOptions.apply(opts)
-	s.serverOptions.apply(opts)
-	s.schemeOptions.apply(opts)
-	s.mediaOptions.apply(opts)
-}
+func (s *Support) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
 // generate support source.
-func (s *Support) generate(opts *generator.GenOpts) error {
-	return generator.GenerateSupport(s.Name, s.Models.Models, s.Operations.Operations, opts)
-}
+func (s *Support) generate(opts *generator.GenOpts) error { _ = "STUB: not implemented"; return nil }
 
 // log after generation.
-func (s Support) log(_ string) {
-	log.Println(`Generation completed!
-
-For this generation to compile you need to have some packages in go.mod:
-
-  * github.com/go-openapi/runtime
-  * github.com/go-openapi/strfmt
-  * github.com/jessevdk/go-flags
-
-You can get these now with: go mod tidy`)
-}
+func (s Support) log(_ string) { _ = "STUB: not implemented"; return }

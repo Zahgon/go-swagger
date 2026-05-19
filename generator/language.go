@@ -24,11 +24,7 @@ var (
 )
 
 // DefaultLanguageFunc defines the default generation language.
-func DefaultLanguageFunc() *LanguageOpts {
-	return language.GolangOpts()
-}
+func DefaultLanguageFunc() *LanguageOpts { _ = "STUB: not implemented"; return nil }
 
 // GolangOpts for rendering items as golang code.
-func GolangOpts() *LanguageOpts {
-	return language.GolangOpts()
-}
+func GolangOpts() *LanguageOpts { _ = "STUB: not implemented"; return nil }

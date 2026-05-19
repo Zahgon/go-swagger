@@ -4,9 +4,6 @@
 package generate
 
 import (
-	"errors"
-	"log"
-
 	"github.com/go-swagger/go-swagger/generator"
 )
 
@@ -20,13 +17,7 @@ type operationOptions struct {
 	SkipTagPackages bool `description:"skips the generation of tag-based operation packages, resulting in a flat generation" long:"skip-tag-packages"`
 }
 
-func (oo operationOptions) apply(opts *generator.GenOpts) {
-	opts.Operations = oo.Operations
-	opts.Tags = oo.Tags
-	opts.APIPackage = oo.APIPackage
-	opts.AllowEnumCI = oo.WithEnumCI
-	opts.SkipTagPackages = oo.SkipTagPackages
-}
+func (oo operationOptions) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
 // WithOperations adds the operations options group.
 type WithOperations struct {
@@ -54,40 +45,11 @@ type Operation struct {
 }
 
 // Execute generates a model file.
-func (o *Operation) Execute(_ []string) error {
-	if o.Shared.DumpData && len(append(o.Name, o.Operations.Operations...)) > 1 {
-		return errors.New("only 1 operation at a time is supported for dumping data")
-	}
-
-	return createSwagger(o)
-}
+func (o *Operation) Execute(_ []string) error { _ = "STUB: not implemented"; return nil }
 
 // apply options.
-func (o Operation) apply(opts *generator.GenOpts) {
-	o.Shared.apply(opts)
-	o.Operations.apply(opts)
-	o.clientOptions.apply(opts)
-	o.serverOptions.apply(opts)
-	o.schemeOptions.apply(opts)
-	o.mediaOptions.apply(opts)
+func (o Operation) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
-	opts.ModelPackage = o.ModelPackage
-	opts.IncludeHandler = !o.NoHandler
-	opts.IncludeResponses = !o.NoResponses
-	opts.IncludeParameters = !o.NoStruct
-	opts.IncludeURLBuilder = !o.NoURLBuilder
-}
+func (o *Operation) generate(opts *generator.GenOpts) error { _ = "STUB: not implemented"; return nil }
 
-func (o *Operation) generate(opts *generator.GenOpts) error {
-	return generator.GenerateServerOperation(append(o.Name, o.Operations.Operations...), opts)
-}
-
-func (o Operation) log(_ string) {
-	log.Println(`Generation completed!
-
-For this generation to compile you need to have some packages in your go.mod:
-
-	* github.com/go-openapi/runtime
-
-You can get these now with: go mod tidy`)
-}
+func (o Operation) log(_ string) { _ = "STUB: not implemented"; return }

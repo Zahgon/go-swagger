@@ -6,12 +6,7 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"strconv"
-
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/go-openapi/errors"
-	"github.com/go-openapi/swag"
 )
 
 // ExtUsersArrayFlat users array flat
@@ -20,29 +15,11 @@ type ExtUsersArrayFlat []*ExtUsersArrayFlatItems0
 
 // Validate validates this users array flat
 func (m ExtUsersArrayFlat) Validate(formats strfmt.Registry) error {
-	var res []error
-
-	for i := 0; i < len(m); i++ {
-		if swag.IsZero(m[i]) { // not required
-			continue
-		}
-
-		if m[i] != nil {
-			if err := m[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName(strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
+
+// not required
 
 // ExtUsersArrayFlatItems0 users array flat items0
 // swagger:model ExtUsersArrayFlatItems0
@@ -57,23 +34,19 @@ type ExtUsersArrayFlatItems0 struct {
 
 // Validate validates this users array flat items0
 func (m *ExtUsersArrayFlatItems0) Validate(formats strfmt.Registry) error {
+	_ = "STUB: not implemented"
+
+	// MarshalBinary interface implementation
 	return nil
 }
 
-// MarshalBinary interface implementation
 func (m *ExtUsersArrayFlatItems0) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // UnmarshalBinary interface implementation
 func (m *ExtUsersArrayFlatItems0) UnmarshalBinary(b []byte) error {
-	var res ExtUsersArrayFlatItems0
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
+	_ = "STUB: not implemented"
 	return nil
 }

@@ -4,13 +4,6 @@
 package generator
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"sort"
-	"strconv"
-	"strings"
-
 	"github.com/go-openapi/analysis"
 	"github.com/go-openapi/spec"
 )
@@ -45,9 +38,9 @@ type GenDefinition struct {
 // this implements a sort by operation id.
 type GenDefinitions []GenDefinition
 
-func (g GenDefinitions) Len() int           { return len(g) }
-func (g GenDefinitions) Less(i, j int) bool { return g[i].Name < g[j].Name }
-func (g GenDefinitions) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
+func (g GenDefinitions) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenDefinitions) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
+func (g GenDefinitions) Swap(i, j int)      { _ = "STUB: not implemented"; return }
 
 // GenSchemaList is a list of schemas for generation.
 //
@@ -109,132 +102,44 @@ type GenSchema struct {
 }
 
 // PrintTags takes care of rendering tags for a struct field.
-func (g GenSchema) PrintTags() string {
-	const sensibleDefaultTagsAlloc = 3
-	tags := make(map[string]string, sensibleDefaultTagsAlloc)
-	orderedTags := make([]string, 0, sensibleDefaultTagsAlloc)
+func (g GenSchema) PrintTags() string { _ = "STUB: not implemented"; return "" }
 
-	tags["json"] = g.renderMarshalTag()
-	orderedTags = append(orderedTags, "json")
+// Add extra struct tags, only if the tag hasn't already been set, i.e. example.
+// Extra struct tags have the same value has the `json` tag.
 
-	if len(g.XMLName) > 0 {
-		if !g.Required && g.IsEmptyOmitted {
-			tags["xml"] = g.XMLName + ",omitempty"
-		} else {
-			tags["xml"] = g.XMLName
-		}
-		orderedTags = append(orderedTags, "xml")
-	}
+// dedupe
 
-	// Add extra struct tags, only if the tag hasn't already been set, i.e. example.
-	// Extra struct tags have the same value has the `json` tag.
-	for _, tag := range g.StructTags {
-		if _, exists := tags[tag]; exists {
-			// dedupe
-			continue
-		}
+// only add example tag if it's contained in the struct tags
+// json representation of the example object
 
-		switch {
-		case tag == "example" && len(g.Example) > 0:
-			// only add example tag if it's contained in the struct tags
-			tags["example"] = g.Example // json representation of the example object
-		case tag == "description" && len(g.Description) > 0:
-			tags["description"] = g.Description
-		default:
-			tags[tag] = tags["json"]
-		}
+// Assemble the tags in key value pairs with the value properly quoted.
 
-		orderedTags = append(orderedTags, tag)
-	}
+// Join the key value pairs by a space.
 
-	// Assemble the tags in key value pairs with the value properly quoted.
-	kvPairs := make([]string, 0, len(orderedTags)+1)
-	for _, key := range orderedTags {
-		kvPairs = append(kvPairs, fmt.Sprintf("%s:%s", key, strconv.Quote(tags[key])))
-	}
+// If the values contain a backtick, we cannot render the tag using backticks because Go does not support
+// escaping backticks in raw string literals.
 
-	if len(g.CustomTag) > 0 {
-		kvPairs = append(kvPairs, g.CustomTag)
-	}
-
-	// Join the key value pairs by a space.
-	completeTag := strings.Join(kvPairs, " ")
-
-	// If the values contain a backtick, we cannot render the tag using backticks because Go does not support
-	// escaping backticks in raw string literals.
-	valuesHaveBacktick := false
-	for _, value := range tags {
-		if !strconv.CanBackquote(value) {
-			valuesHaveBacktick = true
-			break
-		}
-	}
-
-	if !valuesHaveBacktick {
-		return fmt.Sprintf("`%s`", completeTag)
-	}
-
-	// We have to escape the tag again to put it in a literal with double quotes as the tag format uses double quotes.
-	return strconv.Quote(completeTag)
-}
+// We have to escape the tag again to put it in a literal with double quotes as the tag format uses double quotes.
 
 // UnderlyingType tells the go type or the aliased go type.
-func (g GenSchema) UnderlyingType() string {
-	if g.IsAliased {
-		return g.AliasedType
-	}
-	return g.GoType
-}
+func (g GenSchema) UnderlyingType() string { _ = "STUB: not implemented"; return "" }
 
 // ToString returns a string conversion expression for the schema.
-func (g GenSchema) ToString() string {
-	return g.resolvedType.ToString(g.ValueExpression)
-}
+func (g GenSchema) ToString() string { _ = "STUB: not implemented"; return "" }
 
-func (g GenSchema) renderMarshalTag() string {
-	if g.HasBaseType {
-		return "-"
-	}
+func (g GenSchema) renderMarshalTag() string { _ = "STUB: not implemented"; return "" }
 
-	var result strings.Builder
+func (g GenSchemaList) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenSchemaList) Swap(i, j int)      { _ = "STUB: not implemented"; return }
+func (g GenSchemaList) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
-	result.WriteString(g.OriginalName)
+// If both properties have x-order defined, then the one with lower x-order is smaller
 
-	if !g.Required && g.IsEmptyOmitted {
-		result.WriteString(",omitempty")
-	}
+// If only the first property has x-order defined, then it is smaller
 
-	if g.IsJSONString {
-		result.WriteString(",string")
-	}
+// If only the second property has x-order defined, then it is smaller
 
-	return result.String()
-}
-
-func (g GenSchemaList) Len() int      { return len(g) }
-func (g GenSchemaList) Swap(i, j int) { g[i], g[j] = g[j], g[i] }
-func (g GenSchemaList) Less(i, j int) bool {
-	a, okA := g[i].Extensions[xOrder].(float64)
-	b, okB := g[j].Extensions[xOrder].(float64)
-
-	// If both properties have x-order defined, then the one with lower x-order is smaller
-	if okA && okB {
-		return a < b
-	}
-
-	// If only the first property has x-order defined, then it is smaller
-	if okA {
-		return true
-	}
-
-	// If only the second property has x-order defined, then it is smaller
-	if okB {
-		return false
-	}
-
-	// If neither property has x-order defined, then the one with lower lexicographic name is smaller
-	return g[i].Name < g[j].Name
-}
+// If neither property has x-order defined, then the one with lower lexicographic name is smaller
 
 type sharedValidations struct {
 	spec.SchemaValidations
@@ -279,9 +184,9 @@ type GenResponse struct {
 // GenResponseExamples is a sortable collection []GenResponseExample.
 type GenResponseExamples []GenResponseExample
 
-func (g GenResponseExamples) Len() int           { return len(g) }
-func (g GenResponseExamples) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
-func (g GenResponseExamples) Less(i, j int) bool { return g[i].MediaType < g[j].MediaType }
+func (g GenResponseExamples) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenResponseExamples) Swap(i, j int)      { _ = "STUB: not implemented"; return }
+func (g GenResponseExamples) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
 // GenResponseExample captures an example provided for a response for some mime type.
 type GenResponseExample struct {
@@ -322,30 +227,25 @@ type GenHeader struct {
 // ItemsDepth returns a string "items.items..." with as many items as the level of nesting of the array.
 // For a header objects it always returns "".
 func (h *GenHeader) ItemsDepth() string {
+	_ = "STUB: not implemented"
 	// NOTE: this is currently used by templates to generate explicit comments in nested structures
 	return ""
 }
 
 // ToString returns a string conversion expression for the header.
-func (h GenHeader) ToString() string {
-	return h.resolvedType.ToString(h.ValueExpression)
-}
+func (h GenHeader) ToString() string { _ = "STUB: not implemented"; return "" }
 
 // GenHeaders is a sorted collection of headers for codegen.
 type GenHeaders []GenHeader
 
-func (g GenHeaders) Len() int           { return len(g) }
-func (g GenHeaders) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
-func (g GenHeaders) Less(i, j int) bool { return g[i].Name < g[j].Name }
+func (g GenHeaders) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenHeaders) Swap(i, j int)      { _ = "STUB: not implemented"; return }
+func (g GenHeaders) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
 // HasSomeDefaults returns true is at least one header has a default value set.
 func (g GenHeaders) HasSomeDefaults() bool {
+	_ = "STUB: not implemented"
 	// NOTE: this is currently used by templates to avoid empty constructs
-	for _, header := range g {
-		if header.HasDefault {
-			return true
-		}
-	}
 	return false
 }
 
@@ -405,67 +305,52 @@ type GenParameter struct {
 }
 
 // IsQueryParam returns true when this parameter is a query param.
-func (g *GenParameter) IsQueryParam() bool {
-	return g.Location == "query"
-}
+func (g *GenParameter) IsQueryParam() bool { _ = "STUB: not implemented"; return false }
 
 // IsPathParam returns true when this parameter is a path param.
-func (g *GenParameter) IsPathParam() bool {
-	return g.Location == "path"
-}
+func (g *GenParameter) IsPathParam() bool { _ = "STUB: not implemented"; return false }
 
 // IsFormParam returns true when this parameter is a form param.
-func (g *GenParameter) IsFormParam() bool {
-	return g.Location == "formData"
-}
+func (g *GenParameter) IsFormParam() bool { _ = "STUB: not implemented"; return false }
 
 // IsHeaderParam returns true when this parameter is a header param.
-func (g *GenParameter) IsHeaderParam() bool {
-	return g.Location == "header"
-}
+func (g *GenParameter) IsHeaderParam() bool { _ = "STUB: not implemented"; return false }
 
 // IsBodyParam returns true when this parameter is a body param.
-func (g *GenParameter) IsBodyParam() bool {
-	return g.Location == body
-}
+func (g *GenParameter) IsBodyParam() bool { _ = "STUB: not implemented"; return false }
 
 // IsFileParam returns true when this parameter is a file param.
-func (g *GenParameter) IsFileParam() bool {
-	return g.SwaggerType == file
-}
+func (g *GenParameter) IsFileParam() bool { _ = "STUB: not implemented"; return false }
 
 // ItemsDepth returns a string "items.items..." with as many items as the level of nesting of the array.
 // For a parameter object, it always returns "".
 func (g *GenParameter) ItemsDepth() string {
+	_ = "STUB: not implemented"
 	// NOTE: this is currently used by templates to generate explicit comments in nested structures
 	return ""
 }
 
 // UnderlyingType tells the go type or the aliased go type.
 func (g GenParameter) UnderlyingType() string {
-	return g.GoType
+	_ = "STUB: not implemented"
+
+	// ToString returns a string conversion expression for the parameter.
+	return ""
 }
 
-// ToString returns a string conversion expression for the parameter.
-func (g GenParameter) ToString() string {
-	return g.resolvedType.ToString(g.ValueExpression)
-}
+func (g GenParameter) ToString() string { _ = "STUB: not implemented"; return "" }
 
 // GenParameters represents a sorted parameter collection.
 type GenParameters []GenParameter
 
-func (g GenParameters) Len() int           { return len(g) }
-func (g GenParameters) Less(i, j int) bool { return g[i].Name < g[j].Name }
-func (g GenParameters) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
+func (g GenParameters) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenParameters) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
+func (g GenParameters) Swap(i, j int)      { _ = "STUB: not implemented"; return }
 
 // HasSomeDefaults returns true is at least one parameter has a default value set.
 func (g GenParameters) HasSomeDefaults() bool {
+	_ = "STUB: not implemented"
 	// NOTE: this is currently used by templates to avoid empty constructs
-	for _, param := range g {
-		if param.HasDefault {
-			return true
-		}
-	}
 	return false
 }
 
@@ -495,25 +380,20 @@ type GenItems struct {
 
 // ItemsDepth returns a string "items.items..." with as many items as the level of nesting of the array.
 func (g *GenItems) ItemsDepth() string {
+	_ = "STUB: not implemented"
 	// NOTE: this is currently used by templates to generate explicit comments in nested structures
-	current := g
-	i := 1
-	for current.Parent != nil {
-		i++
-		current = current.Parent
-	}
-	return strings.Repeat("items.", i)
+	return ""
 }
 
 // UnderlyingType tells the go type or the aliased go type.
 func (g GenItems) UnderlyingType() string {
-	return g.GoType
+	_ = "STUB: not implemented"
+
+	// ToString returns a string conversion expression for the item.
+	return ""
 }
 
-// ToString returns a string conversion expression for the item.
-func (g GenItems) ToString() string {
-	return g.resolvedType.ToString(g.ValueExpression)
-}
+func (g GenItems) ToString() string { _ = "STUB: not implemented"; return "" }
 
 // GenOperationGroup represents a named (tagged) group of operations.
 type GenOperationGroup struct {
@@ -536,60 +416,36 @@ type GenOperationGroup struct {
 // GenOperationGroups is a sorted collection of operation groups.
 type GenOperationGroups []GenOperationGroup
 
-func (g GenOperationGroups) Len() int           { return len(g) }
-func (g GenOperationGroups) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
-func (g GenOperationGroups) Less(i, j int) bool { return g[i].Name < g[j].Name }
+func (g GenOperationGroups) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenOperationGroups) Swap(i, j int)      { _ = "STUB: not implemented"; return }
+func (g GenOperationGroups) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
 // GenStatusCodeResponses a container for status code responses.
 type GenStatusCodeResponses []GenResponse
 
-func (g GenStatusCodeResponses) Len() int           { return len(g) }
-func (g GenStatusCodeResponses) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
-func (g GenStatusCodeResponses) Less(i, j int) bool { return g[i].Code < g[j].Code }
+func (g GenStatusCodeResponses) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenStatusCodeResponses) Swap(i, j int)      { _ = "STUB: not implemented"; return }
+func (g GenStatusCodeResponses) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
 // MarshalJSON marshals these responses to json
 //
 // This is used by DumpData.
 func (g GenStatusCodeResponses) MarshalJSON() ([]byte, error) {
-	if g == nil {
-		return nil, nil
-	}
-	responses := make(GenStatusCodeResponses, len(g))
-	copy(responses, g)
-	// order marshalled output
-	sort.Sort(responses)
-
-	var buf bytes.Buffer
-	buf.WriteRune('{')
-	for i, v := range responses {
-		rb, err := json.Marshal(v) //nolint:musttag // OK: we leave json fields identical to go fields. Dumpdata is used for debug.
-		if err != nil {
-			return nil, err
-		}
-		if i > 0 {
-			buf.WriteRune(',')
-		}
-		fmt.Fprintf(&buf, "%q:", strconv.Itoa(v.Code))
-		buf.Write(rb)
-	}
-	buf.WriteRune('}')
-	return buf.Bytes(), nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// order marshalled output
+
+//nolint:musttag // OK: we leave json fields identical to go fields. Dumpdata is used for debug.
 
 // UnmarshalJSON unmarshals this GenStatusCodeResponses from json.
 func (g *GenStatusCodeResponses) UnmarshalJSON(data []byte) error {
-	var dd map[string]GenResponse
-	if err := json.Unmarshal(data, &dd); err != nil { //nolint:musttag // OK: we leave json fields identical to go fields. Dumpdata is used for debug.
-		return err
-	}
-	gg := make(GenStatusCodeResponses, 0, len(dd))
-	for _, v := range dd {
-		gg = append(gg, v)
-	}
-	sort.Sort(gg)
-	*g = gg
+	_ = "STUB: not implemented"
 	return nil
 }
+
+//nolint:musttag // OK: we leave json fields identical to go fields. Dumpdata is used for debug.
 
 // GenOperation represents an operation for code generation.
 type GenOperation struct {
@@ -659,9 +515,9 @@ type GenOperation struct {
 // this implements a sort by operation id.
 type GenOperations []GenOperation
 
-func (g GenOperations) Len() int           { return len(g) }
-func (g GenOperations) Less(i, j int) bool { return g[i].Name < g[j].Name }
-func (g GenOperations) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
+func (g GenOperations) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenOperations) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
+func (g GenOperations) Swap(i, j int)      { _ = "STUB: not implemented"; return }
 
 // GenApp represents all the meta data needed to generate an application
 // from a swagger spec.
@@ -708,49 +564,29 @@ type GenApp struct {
 }
 
 // UseGoStructFlags returns true when no strategy is specified or it is set to "go-flags".
-func (g *GenApp) UseGoStructFlags() bool {
-	if g.GenOpts == nil {
-		return true
-	}
-	return g.GenOpts.FlagStrategy == "" || g.GenOpts.FlagStrategy == "go-flags"
-}
+func (g *GenApp) UseGoStructFlags() bool { _ = "STUB: not implemented"; return false }
 
 // UsePFlags returns true when the flag strategy is set to pflag.
-func (g *GenApp) UsePFlags() bool {
-	return g.GenOpts != nil && strings.HasPrefix(g.GenOpts.FlagStrategy, "pflag")
-}
+func (g *GenApp) UsePFlags() bool { _ = "STUB: not implemented"; return false }
 
 // UseFlags returns true when the flag strategy is set to flag.
-func (g *GenApp) UseFlags() bool {
-	return g.GenOpts != nil && strings.HasPrefix(g.GenOpts.FlagStrategy, "flag")
-}
+func (g *GenApp) UseFlags() bool { _ = "STUB: not implemented"; return false }
 
 // UseIntermediateMode for https://wiki.mozilla.org/Security/Server_Side_TLS#Intermediate_compatibility_.28default.29
-func (g *GenApp) UseIntermediateMode() bool {
-	return g.GenOpts != nil && g.GenOpts.CompatibilityMode == "intermediate"
-}
+func (g *GenApp) UseIntermediateMode() bool { _ = "STUB: not implemented"; return false }
 
 // UseModernMode for https://wiki.mozilla.org/Security/Server_Side_TLS#Modern_compatibility
-func (g *GenApp) UseModernMode() bool {
-	return g.GenOpts == nil || g.GenOpts.CompatibilityMode == "" || g.GenOpts.CompatibilityMode == "modern"
-}
+func (g *GenApp) UseModernMode() bool { _ = "STUB: not implemented"; return false }
 
 // GenSerGroups sorted representation of serializer groups.
 type GenSerGroups []GenSerGroup
 
-func (g GenSerGroups) Len() int           { return len(g) }
-func (g GenSerGroups) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
-func (g GenSerGroups) Less(i, j int) bool { return g[i].Name < g[j].Name }
+func (g GenSerGroups) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenSerGroups) Swap(i, j int)      { _ = "STUB: not implemented"; return }
+func (g GenSerGroups) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
 // NumSerializers yields the total number of serializer entries in this group.
-func (g GenSerGroups) NumSerializers() int {
-	n := 0
-	for _, group := range g {
-		n += len(group.AllSerializers)
-	}
-
-	return n
-}
+func (g GenSerGroups) NumSerializers() int { _ = "STUB: not implemented"; return 0 }
 
 // GenSerGroup represents a group of serializers: this links a serializer to a list of
 // prioritized media types (mime).
@@ -764,9 +600,9 @@ type GenSerGroup struct {
 // GenSerializers sorted representation of serializers.
 type GenSerializers []GenSerializer
 
-func (g GenSerializers) Len() int           { return len(g) }
-func (g GenSerializers) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
-func (g GenSerializers) Less(i, j int) bool { return g[i].MediaType < g[j].MediaType }
+func (g GenSerializers) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenSerializers) Swap(i, j int)      { _ = "STUB: not implemented"; return }
+func (g GenSerializers) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
 // GenSerializer represents a single serializer for a particular media type.
 type GenSerializer struct {
@@ -806,9 +642,9 @@ type GenSecurityScheme struct {
 // GenSecuritySchemes sorted representation of serializers.
 type GenSecuritySchemes []GenSecurityScheme
 
-func (g GenSecuritySchemes) Len() int           { return len(g) }
-func (g GenSecuritySchemes) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
-func (g GenSecuritySchemes) Less(i, j int) bool { return g[i].ID < g[j].ID }
+func (g GenSecuritySchemes) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenSecuritySchemes) Swap(i, j int)      { _ = "STUB: not implemented"; return }
+func (g GenSecuritySchemes) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
 // GenSecurityRequirement represents a security requirement for an operation.
 type GenSecurityRequirement struct {
@@ -828,9 +664,9 @@ type GenSecurityScope struct {
 // inner elements are interpreted as jointly required (AND).
 type GenSecurityRequirements []GenSecurityRequirement
 
-func (g GenSecurityRequirements) Len() int           { return len(g) }
-func (g GenSecurityRequirements) Swap(i, j int)      { g[i], g[j] = g[j], g[i] }
-func (g GenSecurityRequirements) Less(i, j int) bool { return g[i].Name < g[j].Name }
+func (g GenSecurityRequirements) Len() int           { _ = "STUB: not implemented"; return 0 }
+func (g GenSecurityRequirements) Swap(i, j int)      { _ = "STUB: not implemented"; return }
+func (g GenSecurityRequirements) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
 // GenClientOptions holds extra pieces of information
 // to generate a client.

@@ -4,17 +4,10 @@
 package generate
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"path/filepath"
-	"strings"
-
 	flags "github.com/jessevdk/go-flags"
 	"github.com/spf13/viper"
 
 	"github.com/go-openapi/analysis"
-	"github.com/go-openapi/swag"
 
 	"github.com/go-swagger/go-swagger/generator"
 )
@@ -35,54 +28,15 @@ type FlattenCmdOptions struct {
 
 // SetFlattenOptions builds flatten options from command line args.
 func (f *FlattenCmdOptions) SetFlattenOptions(dflt *analysis.FlattenOpts) (res *analysis.FlattenOpts) {
-	res = &analysis.FlattenOpts{}
-	if dflt != nil {
-		*res = *dflt
-	}
-	if f == nil {
-		return res
-	}
-	verboseIsSet := false
-	minimalIsSet := false
-	expandIsSet := false
-	if f.WithExpand {
-		res.Expand = true
-		expandIsSet = true
-	}
-	for _, opt := range f.WithFlatten {
-		switch opt {
-		case verboseFlag:
-			res.Verbose = true
-			verboseIsSet = true
-		case noverboseFlag:
-			if !verboseIsSet {
-				// verbose flag takes precedence
-				res.Verbose = false
-				verboseIsSet = true
-			}
-		case "remove-unused":
-			res.RemoveUnused = true
-		case "expand":
-			res.Expand = true
-			expandIsSet = true
-		case fullFlag:
-			if !minimalIsSet && !expandIsSet {
-				// minimal flag takes precedence
-				res.Minimal = false
-				minimalIsSet = true
-			}
-		case minimalFlag:
-			if !expandIsSet {
-				// expand flag takes precedence
-				res.Minimal = true
-				minimalIsSet = true
-			}
-		case "keep-names":
-			res.KeepNames = true
-		}
-	}
-	return res
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// verbose flag takes precedence
+
+// minimal flag takes precedence
+
+// expand flag takes precedence
 
 type sharedCommand interface {
 	apply(options *generator.GenOpts)
@@ -98,33 +52,21 @@ type schemeOptions struct {
 	PrincipalIface bool `description:"the security principal provided is an interface, not a struct" long:"principal-is-interface"`
 }
 
-func (so schemeOptions) apply(opts *generator.GenOpts) {
-	opts.Principal = so.Principal
-	opts.PrincipalCustomIface = so.PrincipalIface
-	opts.DefaultScheme = so.DefaultScheme
-}
+func (so schemeOptions) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
 type mediaOptions struct {
 	DefaultProduces string `default:"application/json" description:"the default mime type that API operations produce" long:"default-produces"`
 	DefaultConsumes string `default:"application/json" description:"the default mime type that API operations consume" long:"default-consumes"`
 }
 
-func (m mediaOptions) apply(opts *generator.GenOpts) {
-	opts.DefaultProduces = m.DefaultProduces
-	opts.DefaultConsumes = m.DefaultConsumes
-
-	const xmlIdentifier = "xml"
-	opts.WithXML = strings.Contains(opts.DefaultProduces, xmlIdentifier) || strings.Contains(opts.DefaultConsumes, xmlIdentifier)
-}
+func (m mediaOptions) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
 // WithShared adds the shared options group.
 type WithShared struct {
 	Shared sharedOptions `group:"Options common to all code generation commands"`
 }
 
-func (w WithShared) getConfigFile() string {
-	return string(w.Shared.ConfigFile)
-}
+func (w WithShared) getConfigFile() string { _ = "STUB: not implemented"; return "" }
 
 type sharedOptionsCommon struct {
 	FlattenCmdOptions
@@ -143,125 +85,33 @@ type sharedOptionsCommon struct {
 	ReturnErrors          bool           `description:"handlers explicitly return an error as the second value"                            group:"shared"                                            long:"return-errors"           short:"e"`
 }
 
-func (s sharedOptionsCommon) apply(opts *generator.GenOpts) {
-	opts.Spec = string(s.Spec)
-	opts.Target = string(s.Target)
-	opts.Template = s.Template
-	opts.TemplateDir = string(s.TemplateDir)
-	opts.AllowTemplateOverride = s.AllowTemplateOverride
-	opts.ValidateSpec = !s.SkipValidation
-	opts.DumpData = s.DumpData
-	opts.FlattenOpts = s.SetFlattenOptions(opts.FlattenOpts)
-	opts.Copyright = string(s.CopyrightFile)
-	opts.StrictResponders = s.StrictResponders
-	opts.ReturnErrors = s.ReturnErrors
-	opts.WithCustomFormatter = s.WithCustomFormatter
+func (s sharedOptionsCommon) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
-	swag.AddInitialisms(s.AdditionalInitialisms...) //nolint:staticcheck // tracked for migration to mangling.WithAdditionalInitialisms
-}
+//nolint:staticcheck // tracked for migration to mangling.WithAdditionalInitialisms
 
 func setCopyright(copyrightFile string) (string, error) {
+	_ = "STUB: not implemented"
 	// read the Copyright from file path in opts
-	if copyrightFile == "" {
-		return "", nil
-	}
-	bytebuffer, err := os.ReadFile(copyrightFile)
-	if err != nil {
-		return "", err
-	}
-	return string(bytebuffer), nil
+	return "", nil
 }
 
-func createSwagger(s sharedCommand) error {
-	var (
-		cfg *viper.Viper
-		err error
-	)
+func createSwagger(s sharedCommand) error { _ = "STUB: not implemented"; return nil }
 
-	if configFile := s.getConfigFile(); configFile != "" {
-		// process explicit config file argument
-		cfg, err = readConfig(configFile)
-		if err != nil {
-			return err
-		}
+// process explicit config file argument
 
-		setDebug(cfg) // viper config Debug
-	}
+// viper config Debug
 
-	opts := new(generator.GenOpts)
-	s.apply(opts)
+// TODO(fredbi): we should try and remove the need to work with relative paths,
+// as this causes unnecessary constraints on os'es that support multiple drives
+// (i.e. not single root like on unix), for example Windows.
 
-	opts.Copyright, err = setCopyright(opts.Copyright)
-	if err != nil {
-		return fmt.Errorf("could not load copyright file: %w", err)
-	}
+func readConfig(filename string) (*viper.Viper, error) { _ = "STUB: not implemented"; return nil, nil }
 
-	if opts.Template != "" {
-		contribOptionsOverride(opts)
-	}
-
-	if err = opts.EnsureDefaults(); err != nil {
-		return err
-	}
-
-	if err = configureOptsFromConfig(cfg, opts); err != nil {
-		return err
-	}
-
-	if err = s.generate(opts); err != nil {
-		return err
-	}
-
-	basepath, err := filepath.Abs(".")
-	if err != nil {
-		return err
-	}
-
-	targetAbs, err := filepath.Abs(opts.Target)
-	if err != nil {
-		return err
-	}
-	// TODO(fredbi): we should try and remove the need to work with relative paths,
-	// as this causes unnecessary constraints on os'es that support multiple drives
-	// (i.e. not single root like on unix), for example Windows.
-	rp, err := filepath.Rel(basepath, targetAbs)
-	if err != nil {
-		return err
-	}
-
-	s.log(rp)
-
+func configureOptsFromConfig(cfg *viper.Viper, opts *generator.GenOpts) error {
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func readConfig(filename string) (*viper.Viper, error) {
-	abspath, err := filepath.Abs(filename)
-	if err != nil {
-		return nil, err
-	}
+func setDebug(cfg *viper.Viper) { _ = "STUB: not implemented"; return }
 
-	log.Println("reading config from", abspath)
-
-	return generator.ReadConfig(abspath)
-}
-
-func configureOptsFromConfig(cfg *viper.Viper, opts *generator.GenOpts) error {
-	if cfg == nil {
-		return nil
-	}
-
-	var def generator.LanguageDefinition
-	if err := cfg.Unmarshal(&def); err != nil {
-		return err
-	}
-	return def.ConfigureOpts(opts)
-}
-
-func setDebug(cfg *viper.Viper) {
-	if os.Getenv("DEBUG") == "" && os.Getenv("SWAGGER_DEBUG") == "" {
-		return
-	}
-
-	// viper config debug
-	cfg.Debug()
-}
+// viper config debug

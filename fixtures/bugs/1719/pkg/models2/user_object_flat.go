@@ -7,8 +7,6 @@ package models2
 
 import (
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/go-openapi/swag"
 )
 
 // ExtUserObjectFlat user object flat
@@ -24,23 +22,16 @@ type ExtUserObjectFlat struct {
 
 // Validate validates this user object flat
 func (m *ExtUserObjectFlat) Validate(formats strfmt.Registry) error {
+	_ = "STUB: not implemented"
+
+	// MarshalBinary interface implementation
 	return nil
 }
 
-// MarshalBinary interface implementation
 func (m *ExtUserObjectFlat) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // UnmarshalBinary interface implementation
-func (m *ExtUserObjectFlat) UnmarshalBinary(b []byte) error {
-	var res ExtUserObjectFlat
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
+func (m *ExtUserObjectFlat) UnmarshalBinary(b []byte) error { _ = "STUB: not implemented"; return nil }

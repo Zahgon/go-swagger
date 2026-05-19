@@ -3,10 +3,7 @@
 package api
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
-	"strconv"
 )
 
 type User struct {
@@ -32,36 +29,9 @@ type FooBarResponse struct {
 }
 
 // FooBarHandler handles incoming foobar requests
-func FooBarHandler(w http.ResponseWriter, req *http.Request) {
-	if err := req.ParseForm(); err != nil {
-		http.Error(w, fmt.Sprintf("%s: %v", http.StatusText(http.StatusBadRequest), err), http.StatusBadRequest)
-		return
-	}
-	raw := req.FormValue("age")
-	age, err := strconv.Atoi(raw)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("%s: %v", http.StatusText(http.StatusBadRequest), err), http.StatusBadRequest)
-		return
-	}
-
-	r := FooBarRequest{
-		Foo: req.FormValue("foo"),
-		User: User{
-			Name: req.FormValue("name"),
-			Age:  age,
-		},
-	}
-
-	resp := doSthWithRequest(r)
-
-	enc := json.NewEncoder(w)
-	err = enc.Encode(resp)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("%s: %v", http.StatusText(http.StatusInternalServerError), err), http.StatusInternalServerError)
-		return
-	}
-}
+func FooBarHandler(w http.ResponseWriter, req *http.Request) { _ = "STUB: not implemented"; return }
 
 func doSthWithRequest(req FooBarRequest) FooBarResponse {
-	return FooBarResponse{}
+	_ = "STUB: not implemented"
+	return *new(FooBarResponse)
 }

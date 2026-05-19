@@ -4,9 +4,6 @@
 package generate
 
 import (
-	"log"
-	"strings"
-
 	"github.com/go-swagger/go-swagger/generator"
 )
 
@@ -16,9 +13,7 @@ type serverOptions struct {
 	ImplementationPackage string `default:""        description:"the location of the backend implementation of the server, which will be autowired with api" long:"implementation-package" short:""`
 }
 
-func (cs serverOptions) apply(opts *generator.GenOpts) {
-	opts.ServerPackage = cs.ServerPackage
-}
+func (cs serverOptions) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
 // Server the command to generate an entire server application.
 type Server struct {
@@ -47,64 +42,11 @@ type Server struct {
 }
 
 // Execute runs this command.
-func (s *Server) Execute(_ []string) error {
-	return createSwagger(s)
-}
+func (s *Server) Execute(_ []string) error { _ = "STUB: not implemented"; return nil }
 
 // apply options.
-func (s *Server) apply(opts *generator.GenOpts) {
-	if s.WithContext {
-		log.Printf("warning: deprecated option --with-context is ignored")
-		s.WithContext = false
-	}
+func (s *Server) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
-	s.Shared.apply(opts)
-	s.Models.apply(opts)
-	s.Operations.apply(opts)
-	s.serverOptions.apply(opts)
-	s.schemeOptions.apply(opts)
-	s.mediaOptions.apply(opts)
+func (s *Server) generate(opts *generator.GenOpts) error { _ = "STUB: not implemented"; return nil }
 
-	opts.IncludeModel = !s.SkipModels
-	opts.IncludeValidator = !s.SkipModels
-	opts.IncludeHandler = !s.SkipOperations
-	opts.IncludeParameters = !s.SkipOperations
-	opts.IncludeResponses = !s.SkipOperations
-	opts.IncludeURLBuilder = !s.SkipOperations
-	opts.IncludeSupport = !s.SkipSupport
-	opts.IncludeMain = !s.ExcludeMain
-	opts.ExcludeSpec = s.ExcludeSpec
-	opts.FlagStrategy = s.FlagStrategy
-	opts.CompatibilityMode = s.CompatibilityMode
-	opts.RegenerateConfigureAPI = s.RegenerateConfigureAPI
-
-	opts.Name = s.Name
-	opts.MainPackage = s.MainTarget
-
-	opts.ImplementationPackage = s.ImplementationPackage
-}
-
-func (s *Server) generate(opts *generator.GenOpts) error {
-	return generator.GenerateServer(s.Name, s.Models.Models, s.Operations.Operations, opts)
-}
-
-func (s Server) log(_ string) {
-	var flagsPackage string
-	switch {
-	case strings.HasPrefix(s.FlagStrategy, "pflag"):
-		flagsPackage = "github.com/spf13/pflag"
-	case strings.HasPrefix(s.FlagStrategy, "flag"):
-		flagsPackage = "flag"
-	default:
-		flagsPackage = "github.com/jessevdk/go-flags"
-	}
-
-	log.Println(`Generation completed!
-
-For this generation to compile you need to have some packages in your go.mod:
-
-	* github.com/go-openapi/runtime
-	* ` + flagsPackage + `
-
-You can get these now with: go mod tidy`)
-}
+func (s Server) log(_ string) { _ = "STUB: not implemented"; return }

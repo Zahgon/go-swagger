@@ -4,18 +4,9 @@
 package commands
 
 import (
-	"errors"
 	"io"
-	"log"
-	"os"
 
 	flags "github.com/jessevdk/go-flags"
-
-	"github.com/go-openapi/analysis"
-	"github.com/go-openapi/loads"
-	"github.com/go-openapi/spec"
-
-	"github.com/go-swagger/go-swagger/generator"
 )
 
 const (
@@ -56,47 +47,13 @@ type MixinSpec struct {
 // merged spec for some tools & target-languages.  Server code
 // generation tools that natively support hosting multiple specs in
 // one server process will not need this tool.
-func (c *MixinSpec) Execute(args []string) error {
-	if len(args) < minRequiredMixinArgs {
-		return errors.New(nothingToDo)
-	}
-	if c.IgnoreConflicts && c.ExpectedCollisionCount != 0 {
-		return errors.New(ignoreConflictsAndCollisionsSpecified)
-	}
+func (c *MixinSpec) Execute(args []string) error { _ = "STUB: not implemented"; return nil }
 
-	log.Printf("args[0] = %v\n", args[0])
-	log.Printf("args[1:] = %v\n", args[1:])
-	collisions, err := c.MixinFiles(args[0], args[1:], os.Stdout)
+// return the number of unexpected collisions as command exit code.
+// Use shell $? to get the actual number of collisions (it has to be non-zero)
+// CLI flag value, overflow is not a concern
 
-	for _, warn := range collisions {
-		log.Println(warn)
-	}
-
-	if err != nil {
-		return err
-	}
-
-	if c.IgnoreConflicts {
-		return nil
-	}
-
-	if c.ExpectedCollisionCount > 0 {
-		// return the number of unexpected collisions as command exit code.
-		// Use shell $? to get the actual number of collisions (it has to be non-zero)
-		if len(collisions) > 0 && len(collisions) != int(c.ExpectedCollisionCount) { // CLI flag value, overflow is not a concern
-			os.Exit(len(collisions))
-		}
-
-		return nil
-	}
-
-	if len(collisions) > 0 {
-		// return non-zero exit code on merge with collisions
-		os.Exit(exitCodeOnCollisions)
-	}
-
-	return nil
-}
+// return non-zero exit code on merge with collisions
 
 // MixinFiles is a convenience function for Mixin that reads the given
 // swagger files, adds the mixins to primary, calls
@@ -106,26 +63,6 @@ func (c *MixinSpec) Execute(args []string) error {
 // Returns the warning messages for collisions that occurred during the mixin
 // process and any error.
 func (c *MixinSpec) MixinFiles(primaryFile string, mixinFiles []string, _ io.Writer) ([]string, error) {
-	primaryDoc, err := loads.Spec(primaryFile)
-	if err != nil {
-		return nil, err
-	}
-	primary := primaryDoc.Spec()
-
-	mixins := make([]*spec.Swagger, 0, len(mixinFiles))
-	for _, mixinFile := range mixinFiles {
-		if c.KeepSpecOrder {
-			mixinFile = generator.WithAutoXOrder(mixinFile)
-		}
-		mixin, lerr := loads.Spec(mixinFile)
-		if lerr != nil {
-			return nil, lerr
-		}
-		mixins = append(mixins, mixin.Spec())
-	}
-
-	collisions := analysis.Mixin(primary, mixins...)
-	analysis.FixEmptyResponseDescriptions(primary)
-
-	return collisions, writeToFile(primary, !c.Compact, c.Format, string(c.Output))
+	_ = "STUB: not implemented"
+	return nil, nil
 }

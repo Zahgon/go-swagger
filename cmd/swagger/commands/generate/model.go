@@ -4,9 +4,6 @@
 package generate
 
 import (
-	"errors"
-	"log"
-
 	"github.com/go-swagger/go-swagger/generator"
 )
 
@@ -21,16 +18,7 @@ type modelOptions struct {
 	RootedErrorPath            bool     `description:"extends validation errors with the type name instead of an empty path, in the case of arrays and maps" long:"rooted-error-path"`
 }
 
-func (mo modelOptions) apply(opts *generator.GenOpts) {
-	opts.ModelPackage = mo.ModelPackage
-	opts.Models = mo.Models
-	opts.ExistingModels = mo.ExistingModels
-	opts.StrictAdditionalProperties = mo.StrictAdditionalProperties
-	opts.PropertiesSpecOrder = mo.KeepSpecOrder
-	opts.IgnoreOperations = mo.AllDefinitions
-	opts.StructTags = mo.StructTags
-	opts.WantsRootedErrorPath = mo.RootedErrorPath
-}
+func (mo modelOptions) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
 // WithModels adds the model options group.
 //
@@ -52,38 +40,11 @@ type Model struct {
 }
 
 // Execute generates a model file.
-func (m *Model) Execute(_ []string) error {
-	if m.Shared.DumpData && len(append(m.Name, m.Models.Models...)) > 1 {
-		return errors.New("only 1 model at a time is supported for dumping data")
-	}
-
-	if m.Models.ExistingModels != "" {
-		log.Println("warning: Ignoring existing-models flag when generating models.")
-	}
-	return createSwagger(m)
-}
+func (m *Model) Execute(_ []string) error { _ = "STUB: not implemented"; return nil }
 
 // apply options.
-func (m Model) apply(opts *generator.GenOpts) {
-	m.Shared.apply(opts)
-	m.Models.apply(opts)
+func (m Model) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }
 
-	opts.IncludeModel = !m.NoStruct
-	opts.IncludeValidator = !m.NoStruct
-	opts.AcceptDefinitionsOnly = m.AcceptDefinitionsOnly
-}
+func (m Model) log(_ string) { _ = "STUB: not implemented"; return }
 
-func (m Model) log(_ string) {
-	log.Println(`Generation completed!
-
-For this generation to compile you need to have some packages in your go.mod:
-
-	* github.com/go-openapi/validate
-	* github.com/go-openapi/strfmt
-
-You can get these now with: go mod tidy`)
-}
-
-func (m *Model) generate(opts *generator.GenOpts) error {
-	return generator.GenerateModels(append(m.Name, m.Models.Models...), opts)
-}
+func (m *Model) generate(opts *generator.GenOpts) error { _ = "STUB: not implemented"; return nil }

@@ -71,6 +71,7 @@ type ErrorModel struct {
 
 // ServeAPI serves the API for this record store
 func ServeAPI(host, basePath string, schemes []string) (err error) {
+	_ = "STUB: not implemented"
 	// swagger:operation GET /pets getPet
 	//
 	// Returns all pets from the system that the user has access to
@@ -107,87 +108,82 @@ func ServeAPI(host, basePath string, schemes []string) (err error) {
 	//     description: unexpected error
 	//     schema:
 	//       "$ref": "#/definitions/errorModel"
-	mountItem("GET", basePath+"/pets", nil)
-
-	// swagger:operation POST /pets addPet
-	//
-	// Creates a new pet in the store.
-	// Duplicates are allowed
-	//
-	// ---
-	// produces:
-	// - application/json
-	// parameters:
-	// - name: pet
-	//   in: body
-	//   description: Pet to add to the store
-	//   required: true
-	//   schema:
-	//       "$ref": "#/definitions/newPet"
-	//
-	// responses:
-	//   '200':
-	//     description: pet response
-	//     schema:
-	//       "$ref": "#/definitions/pet"
-	//   default:
-	//     description: unexpected error
-	//     schema:
-	//       "$ref": "#/definitions/errorModel"
-	mountItem("POST", basePath+"/pets", nil)
-
-	// swagger:operation GET /pets/{id} findPetById
-	//
-	// Returns a user based on a single ID,
-	// if the user does not have access to the pet
-	//
-	// ---
-	// produces:
-	// - application/json
-	// - application/xml
-	// - text/xml
-	// - text/html
-	// parameters:
-	// - name: id
-	//   in: path
-	//   description: ID of pet to fetch
-	//   required: true
-	//   type: integer
-	//   format: int64
-	// responses:
-	//   '200':
-	//     description: pet response
-	//     schema:
-	//       "$ref": "#/definitions/pet"
-	//   default:
-	//     description: unexpected error
-	//     schema:
-	//       "$ref": "#/definitions/errorModel"
-	mountItem("GET", basePath+"/pets/{id}", nil)
-
-	// swagger:operation DELETE /pets/{id} deletePet
-	//
-	// deletes a single pet based on the ID supplied
-	//
-	// ---
-	// parameters:
-	// - name: id
-	//   in: path
-	//   description: ID of pet to delete
-	//   required: true
-	//   type: integer
-	//   format: int64
-	// responses:
-	//   '204':
-	//     description: pet deleted
-	//   default:
-	//     description: unexpected error
-	//     schema:
-	//       "$ref": "#/definitions/errorModel"
-	mountItem("DELETE", basePath+"/pets/{id}", nil)
-
-	return
+	return nil
 }
 
+// swagger:operation POST /pets addPet
+//
+// Creates a new pet in the store.
+// Duplicates are allowed
+//
+// ---
+// produces:
+// - application/json
+// parameters:
+// - name: pet
+//   in: body
+//   description: Pet to add to the store
+//   required: true
+//   schema:
+//       "$ref": "#/definitions/newPet"
+//
+// responses:
+//   '200':
+//     description: pet response
+//     schema:
+//       "$ref": "#/definitions/pet"
+//   default:
+//     description: unexpected error
+//     schema:
+//       "$ref": "#/definitions/errorModel"
+
+// swagger:operation GET /pets/{id} findPetById
+//
+// Returns a user based on a single ID,
+// if the user does not have access to the pet
+//
+// ---
+// produces:
+// - application/json
+// - application/xml
+// - text/xml
+// - text/html
+// parameters:
+// - name: id
+//   in: path
+//   description: ID of pet to fetch
+//   required: true
+//   type: integer
+//   format: int64
+// responses:
+//   '200':
+//     description: pet response
+//     schema:
+//       "$ref": "#/definitions/pet"
+//   default:
+//     description: unexpected error
+//     schema:
+//       "$ref": "#/definitions/errorModel"
+
+// swagger:operation DELETE /pets/{id} deletePet
+//
+// deletes a single pet based on the ID supplied
+//
+// ---
+// parameters:
+// - name: id
+//   in: path
+//   description: ID of pet to delete
+//   required: true
+//   type: integer
+//   format: int64
+// responses:
+//   '204':
+//     description: pet deleted
+//   default:
+//     description: unexpected error
+//     schema:
+//       "$ref": "#/definitions/errorModel"
+
 // not really used but I need a method to decorate the calls to
-func mountItem(method, path string, handler interface{}) {}
+func mountItem(method, path string, handler interface{}) { _ = "STUB: not implemented"; return }

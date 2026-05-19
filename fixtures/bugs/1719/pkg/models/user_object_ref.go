@@ -7,8 +7,6 @@ package models
 
 import (
 	strfmt "github.com/go-openapi/strfmt"
-
-	"github.com/go-openapi/swag"
 )
 
 // ExtUserObjectRef user object ref
@@ -19,48 +17,26 @@ type ExtUserObjectRef struct {
 
 // UnmarshalJSON unmarshals this object from a JSON structure
 func (m *ExtUserObjectRef) UnmarshalJSON(raw []byte) error {
+	_ = "STUB: not implemented"
 	// AO0
-	var aO0 ExtUser
-	if err := swag.ReadJSON(raw, &aO0); err != nil {
-		return err
-	}
-	m.ExtUser = aO0
-
 	return nil
 }
 
 // MarshalJSON marshals this object to a JSON structure
-func (m ExtUserObjectRef) MarshalJSON() ([]byte, error) {
-	_parts := make([][]byte, 0, 1)
-
-	aO0, err := swag.WriteJSON(m.ExtUser)
-	if err != nil {
-		return nil, err
-	}
-	_parts = append(_parts, aO0)
-
-	return swag.ConcatJSON(_parts...), nil
-}
+func (m ExtUserObjectRef) MarshalJSON() ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }
 
 // Validate validates this user object ref
 func (m *ExtUserObjectRef) Validate(formats strfmt.Registry) error {
+	_ = "STUB: not implemented"
+
+	// MarshalBinary interface implementation
 	return nil
 }
 
-// MarshalBinary interface implementation
 func (m *ExtUserObjectRef) MarshalBinary() ([]byte, error) {
-	if m == nil {
-		return nil, nil
-	}
-	return swag.WriteJSON(m)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // UnmarshalBinary interface implementation
-func (m *ExtUserObjectRef) UnmarshalBinary(b []byte) error {
-	var res ExtUserObjectRef
-	if err := swag.ReadJSON(b, &res); err != nil {
-		return err
-	}
-	*m = res
-	return nil
-}
+func (m *ExtUserObjectRef) UnmarshalBinary(b []byte) error { _ = "STUB: not implemented"; return nil }

@@ -11,12 +11,4 @@ type GenOpts struct {
 	TemplatePlugin string
 }
 
-func (g *GenOpts) setTemplates() error {
-	if g.TemplatePlugin != "" {
-		if err := g.templates.LoadPlugin(g.TemplatePlugin); err != nil {
-			return err
-		}
-	}
-
-	return g.GenOptsCommon.setTemplates()
-}
+func (g *GenOpts) setTemplates() error { _ = "STUB: not implemented"; return nil }

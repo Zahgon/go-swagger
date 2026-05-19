@@ -4,18 +4,12 @@
 package generate
 
 import (
-	"encoding/json"
-	"fmt"
 	"io"
 	"os"
-	"strings"
 
-	"github.com/go-openapi/codescan"
-	"github.com/go-openapi/loads"
 	"github.com/go-openapi/spec"
 
 	"github.com/jessevdk/go-flags"
-	"go.yaml.in/yaml/v3"
 )
 
 const (
@@ -44,108 +38,34 @@ type SpecFile struct {
 
 // Execute runs this command.
 func (s *SpecFile) Execute(args []string) error {
-	if len(args) == 0 { // by default consider all the paths under the working directory
-		args = []string{allFromCurrent}
-	}
-
-	var input *spec.Swagger
-	if len(s.Input) > 0 {
-		// load an external spec to merge into
-		swspec, err := loadSpec(string(s.Input))
-		if err != nil {
-			return err
-		}
-		input = swspec
-	}
-
-	var opts codescan.Options
-	opts.Packages = args
-	opts.WorkDir = s.WorkDir
-	opts.InputSpec = input
-	opts.ScanModels = s.ScanModels
-	opts.BuildTags = s.BuildTags
-	opts.Include = s.Include
-	opts.Exclude = s.Exclude
-	opts.IncludeTags = s.IncludeTags
-	opts.ExcludeTags = s.ExcludeTags
-	opts.ExcludeDeps = s.ExcludeDeps
-	opts.SetXNullableForPointers = s.SetXNullableForPointers
-	opts.RefAliases = s.RefAliases
-	opts.TransparentAliases = s.TransparentAliases
-	opts.DescWithRef = s.DescWithRef
-
-	swspec, err := codescan.Run(&opts)
-	if err != nil {
-		return err
-	}
-
-	return writeToFile(swspec, !s.Compact, s.Format, string(s.Output))
+	_ = "STUB: not implemented"
+	// by default consider all the paths under the working directory
+	return nil
 }
 
-func loadSpec(input string) (*spec.Swagger, error) {
-	fi, err := os.Stat(input)
-	if err != nil {
-		return nil, err
-	}
+// load an external spec to merge into
 
-	if fi.IsDir() {
-		return nil, fmt.Errorf("expected %q to be a file not a directory", input)
-	}
-
-	sp, err := loads.Spec(input)
-	if err != nil {
-		return nil, err
-	}
-
-	return sp.Spec(), nil
-}
+func loadSpec(input string) (*spec.Swagger, error) { _ = "STUB: not implemented"; return nil, nil }
 
 var defaultWriter io.Writer = os.Stdout
 
 const generatedFileMode os.FileMode = 0o644
 
 func writeToFile(swspec *spec.Swagger, pretty bool, format string, output string) error {
-	var b []byte
-	var err error
-
-	if strings.HasSuffix(output, "yml") || strings.HasSuffix(output, "yaml") || format == "yaml" {
-		b, err = marshalToYAMLFormat(swspec)
-	} else {
-		b, err = marshalToJSONFormat(swspec, pretty)
-	}
-
-	if err != nil {
-		return err
-	}
-
-	switch output {
-	case "", "-":
-		_, e := fmt.Fprintf(defaultWriter, "%s\n", b)
-		return e
-	default:
-		return os.WriteFile(output, b, generatedFileMode) //#nosec
-	}
-
-	// #nosec
+	_ = "STUB: not implemented"
+	return nil
 }
 
+//#nosec
+
+// #nosec
+
 func marshalToJSONFormat(swspec *spec.Swagger, pretty bool) ([]byte, error) {
-	if pretty {
-		return json.MarshalIndent(swspec, "", "  ")
-	}
-	return json.Marshal(swspec)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func marshalToYAMLFormat(swspec *spec.Swagger) ([]byte, error) {
-	b, err := json.Marshal(swspec)
-	if err != nil {
-		return nil, err
-	}
-
-	var jsonObj any
-	if err := yaml.Unmarshal(b, &jsonObj); err != nil {
-		return nil, err
-	}
-
-	return yaml.Marshal(jsonObj)
+	_ = "STUB: not implemented"
+	return nil, nil
 }

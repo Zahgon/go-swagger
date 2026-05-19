@@ -4,12 +4,7 @@
 package commands
 
 import (
-	"errors"
-
 	flags "github.com/jessevdk/go-flags"
-
-	"github.com/go-openapi/analysis"
-	"github.com/go-openapi/loads"
 
 	"github.com/go-swagger/go-swagger/cmd/swagger/commands/generate"
 )
@@ -26,29 +21,6 @@ type FlattenSpec struct {
 }
 
 // Execute flattens the spec.
-func (c *FlattenSpec) Execute(args []string) error {
-	if len(args) != 1 {
-		return errors.New("flatten command requires the single swagger document url to be specified")
-	}
+func (c *FlattenSpec) Execute(args []string) error { _ = "STUB: not implemented"; return nil }
 
-	swaggerDoc := args[0]
-	specDoc, err := loads.Spec(swaggerDoc)
-	if err != nil {
-		return err
-	}
-
-	flattenOpts := c.SetFlattenOptions(&analysis.FlattenOpts{
-		// defaults
-		Minimal:      true,
-		Verbose:      true,
-		Expand:       false,
-		RemoveUnused: false,
-	})
-	flattenOpts.BasePath = specDoc.SpecFilePath()
-	flattenOpts.Spec = analysis.New(specDoc.Spec())
-	if err := analysis.Flatten(*flattenOpts); err != nil {
-		return err
-	}
-
-	return writeToFile(specDoc.Spec(), !c.Compact, c.Format, string(c.Output))
-}
+// defaults

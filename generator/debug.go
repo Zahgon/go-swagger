@@ -4,13 +4,8 @@
 package generator
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"os"
-	"path/filepath"
-	"runtime"
-	"strings"
 )
 
 var (
@@ -21,128 +16,43 @@ var (
 	generatorLogger *log.Logger
 )
 
-func debugOptions() {
-	generatorLogger = log.New(os.Stdout, "generator:", log.LstdFlags)
-}
+func debugOptions() { _ = "STUB: not implemented"; return }
 
 // debugLog wraps log.Printf with a debug-specific logger.
-func debugLogf(format string, args ...any) {
-	if !Debug {
-		return
-	}
-
-	_, file, pos, _ := runtime.Caller(1)
-	safeArgs := sanitizeDebugLogArgs(args...)
-	generatorLogger.Printf("%s:%d: %s", filepath.Base(file), pos,
-		fmt.Sprintf(format, safeArgs...))
-}
+func debugLogf(format string, args ...any) { _ = "STUB: not implemented"; return }
 
 // debugLogAsJSON unmarshals its last arg as pretty JSON.
-func debugLogAsJSONf(format string, args ...any) {
-	if !Debug {
-		return
-	}
+func debugLogAsJSONf(format string, args ...any) { _ = "STUB: not implemented"; return }
 
-	var dfrmt string
-	const extraNumArgs = 2
-	_, file, pos, _ := runtime.Caller(1)
-	dargs := make([]any, 0, len(args)+extraNumArgs)
-	dargs = append(dargs, filepath.Base(file), pos)
-
-	if len(args) > 0 {
-		dfrmt = "%s:%d: " + format + "\n%s"
-		bbb, _ := json.MarshalIndent(args[len(args)-1], "", " ") //nolint:errchkjson // OK: it's okay for debug
-		dargs = append(dargs, args[0:len(args)-1]...)
-		dargs = append(dargs, string(bbb))
-	} else {
-		dfrmt = "%s:%d: " + format
-	}
-
-	generatorLogger.Printf(dfrmt, dargs...)
-}
+//nolint:errchkjson // OK: it's okay for debug
 
 // sanitizeDebugLogArgs traverses arguments to debugLog and redacts fields
 // that may contain sensitive information, such as API keys or credentials.
-func sanitizeDebugLogArgs(args ...any) []any {
-	safeArgs := make([]any, len(args))
-	for i, arg := range args {
-		safeArgs[i] = sanitizeValue(arg)
-	}
-
-	return safeArgs
-}
+func sanitizeDebugLogArgs(args ...any) []any { _ = "STUB: not implemented"; return nil }
 
 // sanitizeValue redacts sensitive information from known data structures.
 // It can be expanded for more types over time as needed.
-func sanitizeValue(val any) any {
-	switch v := val.(type) {
-	case map[string]any:
-		// recursively sanitize map values
-		res := make(map[string]any, len(v))
-		for k, subv := range v {
-			if k == "IsAPIKeyAuth" || k == "TokenURL" { // false positive: this is a bool indicator, not a sensitive value
-				continue
-			}
+func sanitizeValue(val any) any { _ = "STUB: not implemented"; return *new(any) }
 
-			lower := strings.ToLower(k)
-			if lower == "apikey" || lower == "token" ||
-				lower == "secret" ||
-				strings.Contains(lower, "password") ||
-				strings.Contains(lower, "apikey") ||
-				strings.Contains(lower, "token") {
-				res[k] = "***REDACTED***"
+// recursively sanitize map values
 
-				continue
-			}
+// false positive: this is a bool indicator, not a sensitive value
 
-			res[k] = sanitizeValue(subv)
-		}
-		return res
+// heuristic: redact if looks like a key/secret
 
-	case []any:
-		res := make([]any, len(v))
-		for i, subv := range v {
-			res[i] = sanitizeValue(subv)
-		}
-		return res
-
-	case string:
-		// heuristic: redact if looks like a key/secret
-		lower := strings.ToLower(v)
-		if strings.Contains(lower, "apikey") || strings.Contains(lower, "token") || strings.Contains(lower, "secret") ||
-			strings.Contains(lower, "password") {
-			return "***REDACTED***"
-		}
-		return v
-
-	default:
-		// Optionally, process struct types for known sensitive fields
-		return v
-	}
-}
+// Optionally, process struct types for known sensitive fields
 
 // fatal wraps [log.Fatal] with extra context provided in debug mode.
 func fatal(v ...any) {
-	fatalln(v...)
+	_ = "STUB: not implemented"
+
+	// fatalln wraps [log.Fatalln] with extra context provided in debug mode.
+	return
 }
 
-// fatalln wraps [log.Fatalln] with extra context provided in debug mode.
-func fatalln(v ...any) {
-	if Debug {
-		b := fmt.Appendln([]byte{}, v...)
-		traceFatalf("%s", b)
-	}
-
-	log.Fatalln(v...)
-}
+func fatalln(v ...any) { _ = "STUB: not implemented"; return }
 
 // traceFatalf allows to capture more context about the caller of a fatalX function.
 //
 // This output is not disabled when muting the [log.Logger] (e.g. when running tests).
-func traceFatalf(format string, v ...any) {
-	const callstackOffset = 3
-
-	_, file, pos, _ := runtime.Caller(callstackOffset)
-	safeArgs := sanitizeDebugLogArgs(v...)
-	fmt.Fprintf(os.Stderr, "fatal error: %s:%d: %s\n", filepath.Base(file), pos, fmt.Sprintf(format, safeArgs...))
-}
+func traceFatalf(format string, v ...any) { _ = "STUB: not implemented"; return }

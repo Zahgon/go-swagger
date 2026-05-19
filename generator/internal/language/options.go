@@ -7,15 +7,7 @@
 package language
 
 import (
-	"path"
-	"path/filepath"
-	"strings"
-
 	"golang.org/x/tools/imports"
-
-	"github.com/go-openapi/swag"
-
-	golangfuncs "github.com/go-swagger/go-swagger/generator/internal/funcmaps/golang"
 )
 
 // DefaultIndent is the default tab width used for Go source formatting.
@@ -41,16 +33,14 @@ type FormatOpts struct {
 
 // WithFormatLocalPrefixes adds local prefixes to group imports.
 func WithFormatLocalPrefixes(prefixes ...string) FormatOption {
-	return func(o *FormatOpts) {
-		o.LocalPrefixes = append(o.LocalPrefixes, prefixes...)
-	}
+	_ = "STUB: not implemented"
+	return *new(FormatOption)
 }
 
 // WithFormatOnly tells the formatter to skip imports processing.
 func WithFormatOnly(enabled bool) FormatOption {
-	return func(o *FormatOpts) {
-		o.FormatOnly = enabled
-	}
+	_ = "STUB: not implemented"
+	return *new(FormatOption)
 }
 
 // DefaultFormatOpts is the default set of formatting options.
@@ -66,13 +56,8 @@ var DefaultFormatOpts = FormatOpts{
 
 // FormatOptsWithDefault applies the given options on top of [DefaultFormatOpts].
 func FormatOptsWithDefault(opts []FormatOption) FormatOpts {
-	o := DefaultFormatOpts
-
-	for _, apply := range opts {
-		apply(&o)
-	}
-
-	return o
+	_ = "STUB: not implemented"
+	return *new(FormatOpts)
 }
 
 // Options describes a target language to the code generator.
@@ -91,115 +76,68 @@ type Options struct {
 
 // SetFormatFunc sets the formatting function for this language.
 func (l *Options) SetFormatFunc(fn FormatterFunc) {
-	l.formatFunc = fn
+	_ = "STUB: not implemented"
+
+	// Init the language option.
+	return
 }
 
-// Init the language option.
-func (l *Options) Init() {
-	if l.initialized {
-		return
-	}
-	l.initialized = true
-	l.reservedWordsSet = make(map[string]struct{})
-	for _, rw := range l.ReservedWords {
-		l.reservedWordsSet[rw] = struct{}{}
-	}
-}
+func (l *Options) Init() { _ = "STUB: not implemented"; return }
 
 // MangleName makes sure a reserved word gets a safe name.
-func (l *Options) MangleName(name, suffix string) string {
-	if _, ok := l.reservedWordsSet[swag.ToFileName(name)]; !ok { //nolint:staticcheck // tracked for migration to mangling.NameMangler
-		return name
-	}
+func (l *Options) MangleName(name, suffix string) string { _ = "STUB: not implemented"; return "" }
 
-	return strings.Join([]string{name, suffix}, "_")
-}
+//nolint:staticcheck // tracked for migration to mangling.NameMangler
 
 // MangleVarName makes sure a reserved word gets a safe name.
-func (l *Options) MangleVarName(name string) string {
-	nm := swag.ToVarName(name) //nolint:staticcheck // tracked for migration to mangling.NameMangler
-	if _, ok := l.reservedWordsSet[nm]; !ok {
-		return nm
-	}
+func (l *Options) MangleVarName(name string) string { _ = "STUB: not implemented"; return "" }
 
-	return nm + "Var"
-}
+//nolint:staticcheck // tracked for migration to mangling.NameMangler
 
 // MangleFileName makes sure a file name gets a safe name.
-func (l *Options) MangleFileName(name string) string {
-	if l.fileNameFunc != nil {
-		return l.fileNameFunc(name)
-	}
+func (l *Options) MangleFileName(name string) string { _ = "STUB: not implemented"; return "" }
 
-	return swag.ToFileName(name) //nolint:staticcheck // tracked for migration to mangling.NameMangler
-}
+//nolint:staticcheck // tracked for migration to mangling.NameMangler
 
 // ManglePackageName makes sure a package gets a safe name.
 // In case of a file system path (e.g. name contains "/" or "\" on Windows), this return only the last element.
 func (l *Options) ManglePackageName(name, suffix string) string {
-	if name == "" {
-		return suffix
-	}
-	if l.dirNameFunc != nil {
-		name = l.dirNameFunc(name)
-	}
-	pth := filepath.ToSlash(filepath.Clean(name))                                    // preserve path
-	pkg := importAlias(pth)                                                          // drop path
-	return l.MangleName(swag.ToFileName(golangfuncs.PrefixForName(pkg)+pkg), suffix) //nolint:staticcheck // tracked for migration to mangling.NameMangler
+	_ = "STUB: not implemented"
+	return ""
 }
+
+// preserve path
+// drop path
+//nolint:staticcheck // tracked for migration to mangling.NameMangler
 
 // ManglePackagePath makes sure a full package path gets a safe name.
 // Only the last part of the path is altered.
 func (l *Options) ManglePackagePath(name string, suffix string) string {
-	if name == "" {
-		return suffix
-	}
-	target := filepath.ToSlash(filepath.Clean(name)) // preserve path
-	parts := strings.Split(target, "/")
-	parts[len(parts)-1] = l.ManglePackageName(parts[len(parts)-1], suffix)
-
-	return strings.Join(parts, "/")
-}
-
-// FormatContent formats a file with a language specific formatter.
-func (l *Options) FormatContent(name string, content []byte, opts ...FormatOption) ([]byte, error) {
-	if l.formatFunc != nil {
-		return l.formatFunc(name, content, opts...)
-	}
-
-	// unformatted content
-	return content, nil
-}
-
-// Imports generates the code to import some external packages, possibly aliased.
-func (l *Options) Imports(imports map[string]string) string {
-	if l.ImportsFunc != nil {
-		return l.ImportsFunc(imports)
-	}
-
+	_ = "STUB: not implemented"
 	return ""
 }
 
+// preserve path
+
+// FormatContent formats a file with a language specific formatter.
+func (l *Options) FormatContent(name string, content []byte, opts ...FormatOption) ([]byte, error) {
+	_ = "STUB: not implemented"
+	return nil, nil
+}
+
+// unformatted content
+
+// Imports generates the code to import some external packages, possibly aliased.
+func (l *Options) Imports(imports map[string]string) string { _ = "STUB: not implemented"; return "" }
+
 // ArrayInitializer builds a literal array.
 func (l *Options) ArrayInitializer(data any) (string, error) {
-	if l.ArrayInitializerFunc != nil {
-		return l.ArrayInitializerFunc(data)
-	}
-
+	_ = "STUB: not implemented"
 	return "", nil
 }
 
 // BaseImport figures out the base path to generate import statements.
-func (l *Options) BaseImport(tgt string) string {
-	if l.BaseImportFunc != nil {
-		return l.BaseImportFunc(tgt)
-	}
-
-	return ""
-}
+func (l *Options) BaseImport(tgt string) string { _ = "STUB: not implemented"; return "" }
 
 // importAlias extracts the last path component from a package import path.
-func importAlias(pkg string) string {
-	_, k := path.Split(pkg)
-	return k
-}
+func importAlias(pkg string) string { _ = "STUB: not implemented"; return "" }

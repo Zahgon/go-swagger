@@ -11,6 +11,4 @@ type InitCmd struct {
 }
 
 // Execute provides default empty implementation.
-func (i *InitCmd) Execute(_ []string) error {
-	return nil
-}
+func (i *InitCmd) Execute(_ []string) error { _ = "STUB: not implemented"; return nil }

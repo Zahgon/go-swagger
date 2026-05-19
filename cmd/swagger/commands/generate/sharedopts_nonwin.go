@@ -18,7 +18,4 @@ type sharedOptions struct {
 	TemplatePlugin flags.Filename `description:"the template plugin to use" group:"shared" long:"template-plugin" short:"p"`
 }
 
-func (s sharedOptions) apply(opts *generator.GenOpts) {
-	opts.TemplatePlugin = string(s.TemplatePlugin)
-	s.sharedOptionsCommon.apply(opts)
-}
+func (s sharedOptions) apply(opts *generator.GenOpts) { _ = "STUB: not implemented"; return }

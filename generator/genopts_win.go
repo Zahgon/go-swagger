@@ -9,6 +9,4 @@ type GenOpts struct {
 	GenOptsCommon
 }
 
-func (g *GenOpts) setTemplates() error {
-	return g.GenOptsCommon.setTemplates()
-}
+func (g *GenOpts) setTemplates() error { _ = "STUB: not implemented"; return nil }
